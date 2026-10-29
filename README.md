@@ -62,4 +62,4 @@ Useful flags:
 
 ## Current implementation
 
-The active implementation is `desktop_wellness_buddy.py` with artwork helpers in `buddy_art.py`. The older Ember and hummingbird experiments are intentionally not part of this repository.
+The active implementation is `desktop_wellness_buddy.py` with artwork helpers in `buddy_art.py`. Older experiments are intentionally not part of this repository.

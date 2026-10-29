@@ -167,7 +167,7 @@ JOKES = [
     "Why did the churn rate go to therapy? Separation issues.",
     "I would tell you a UDP joke, but you might not get it.",
     "Why did the dashboard take a break? It needed a refresh.",
-    "My meeting could have been an email. My email could have been a bird. Hello.",
+    "My meeting could have been an email. My email could have been a calendar invite. Hello.",
     "A good analyst is like a tea bag. You find out their strength in hot water.",
     "There are 10 kinds of people: those who read binary and those who do not.",
     "Why was the spreadsheet calm? It had everything in its cells under control.",
