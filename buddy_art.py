@@ -103,6 +103,7 @@ def _doodle(size=256):
 
 def make_avatar(size=256):
     """Load the clean full-body avatar. Returns transparent RGBA."""
+    generic = os.path.join(HERE, "buddy_avatar.png")
     own = os.path.join(HERE, "avatar.png")
     photo = None
     for n in ("me.jpg", "me.jpeg", "me.png"):
@@ -110,7 +111,13 @@ def make_avatar(size=256):
         if os.path.exists(p):
             photo = p
             break
-    if os.path.exists(own):
+    if os.path.exists(generic):
+        face = Image.open(generic).convert("RGBA")
+        face.thumbnail((size, size), Image.LANCZOS)
+        out = Image.new("RGBA", (size, size), (0, 0, 0, 0))
+        out.alpha_composite(face, ((size - face.width) // 2, (size - face.height) // 2))
+        return out
+    elif os.path.exists(own):
         face = Image.open(own).convert("RGBA")
         face.thumbnail((size, size), Image.LANCZOS)
         out = Image.new("RGBA", (size, size), (0, 0, 0, 0))
