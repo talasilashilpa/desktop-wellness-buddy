@@ -38,7 +38,7 @@ powershell -ExecutionPolicy Bypass -File .\Install-DesktopWellnessBuddy.ps1 -Rem
 1. Copy `config.example.json` to `config.json`.
 2. Change the display name.
 3. The public build includes a generic `buddy_avatar.png`. Optionally replace it locally with your own `avatar.png` or `me.jpg`; personal image files are ignored by Git and should never be uploaded unless you deliberately choose to share them.
-4. For a walking animation, add a transparent `avatar_walk.png` sprite sheet containing aligned full-body poses.
+4. The public build includes a six-pose `buddy_walk.png` sprite sheet. You can override it locally with your own transparent `avatar_walk.png` sprite sheet containing aligned full-body poses.
 5. Run the installer again to regenerate the icon.
 
 ## Run manually

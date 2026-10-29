@@ -417,7 +417,9 @@ class DesktopWellnessBuddy:
             pass
         self.avatar =ImageTk.PhotoImage(buddy_art.make_avatar(72).resize((64, 64)))
         self.avatar_sprite = buddy_art.make_avatar(112)
-        walk_path = os.path.join(HERE, "avatar_walk.png")
+        default_walk = os.path.join(HERE, "buddy_walk.png")
+        custom_walk = os.path.join(HERE, "avatar_walk.png")
+        walk_path = custom_walk if os.path.exists(custom_walk) else default_walk
         self.avatar_frames = []
         if os.path.exists(walk_path):
             sheet = Image.open(walk_path).convert("RGBA")
