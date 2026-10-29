@@ -22,7 +22,7 @@ import traceback
 from datetime import datetime
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-LOG = os.path.join(HERE, "little_shilpa.log")
+LOG = os.path.join(HERE, "desktop_wellness_buddy.log")
 
 
 def log(msg):
@@ -173,6 +173,14 @@ JOKES = [
     "Why was the spreadsheet calm? It had everything in its cells under control.",
     "I tried to organize a data party. Nobody could agree on the schema.",
     "Why did the average go to the party alone? It was mean.",
+    "Why did the analyst bring a pencil to the meeting? For a sharp point.",
+    "I asked the backlog to relax. It said it had too many open issues.",
+    "Why was the KPI so calm? It had already found its baseline.",
+    "My data set walked into a cafe. It wanted a little more context.",
+    "Why did the query take a nap? It was waiting on a join.",
+    "I tried to make a pie chart laugh. It was already in a good slice of mind.",
+    "The dashboard said it needed space. I gave it a new tab.",
+    "Why did the metric bring an umbrella? It expected a forecast.",
 ]
 PEP = [
     "Small steps still count as moving forward.",
@@ -183,6 +191,13 @@ PEP = [
     "You lead a team and learn on the side. That is a lot. Be kind to yourself.",
     "Curiosity is your superpower. Keep asking the good question.",
     "Eloquent word of the day: tenacious. That is you.",
+    "You can be serious about the work without being harsh with yourself.",
+    "A pause is part of the process, not evidence that you are behind.",
+    "Reduce the scope until starting feels easy, then let momentum help.",
+    "You are allowed to ask for clarity before accepting more work.",
+    "Protect the quality of your attention; it is one of your best tools.",
+    "Progress can look like deleting one unnecessary step.",
+    "The next version only needs to be clearer than the last one.",
 ]
 ARRIVAL_THOUGHTS = [
     "New position, same mission: make the next useful decision.",
@@ -213,6 +228,14 @@ ARRIVAL_THOUGHTS = [
     "Pause before reacting: breathe in, breathe out, then write the answer.",
     "Name five things you can see, then return to the next useful action.",
     "A two-minute reset is not lost time if it restores good judgment.",
+    "Try physiological sighs: two small inhales, one long slow exhale. Repeat twice.",
+    "Unclench your hands, lower your shoulders, and let your eyes soften for ten seconds.",
+    "If the task feels huge, write only the first verb: open, compare, draft, or send.",
+    "Use a 5-4-3-2-1 reset: five things you see, four you feel, three you hear, two you smell, one you taste.",
+    "Give the worry a parking lot: write it down, schedule a review, return to the task.",
+    "Try a ninety-second reset before the next decision: breathe, name the facts, choose one action.",
+    "You do not need to solve the whole system to improve one handoff today.",
+    "Stand up, look across the room, and let your body remember that the screen is not the whole world.",
 ]
 CONTEXT_LINES = {
     "water": [
@@ -225,12 +248,17 @@ CONTEXT_LINES = {
         "Try boxed breathing: in 4, hold 4, out 4, hold 4, then stretch.",
         "A real break protects the quality of the decision you make next.",
         "Look away from the screen, unclench your jaw, and let your eyes rest.",
+        "Try two physiological sighs: a small inhale, a second top-up inhale, then a long exhale.",
+        "Walk to the next room and back without taking your phone. Let the reset be boring.",
+        "Stretch your hands and forearms; your keyboard does not get to keep the whole afternoon.",
     ],
     "checkin": [
         "Quick check: what is your energy level, and what task matches it?",
         "Name the pressure clearly: urgent, important, or safe to drop?",
         "Separate facts, assumptions, and the decision you need to make.",
         "If you feel stuck, choose one action that takes less than 15 minutes.",
+        "Check your body before your inbox: jaw, shoulders, breath, and energy.",
+        "Do you need information, permission, time, or a smaller task? Name the real need.",
     ],
     "joke": [
         "A tiny reset is allowed. After the laugh, close one open loop.",
@@ -241,11 +269,15 @@ CONTEXT_LINES = {
         "Write the conclusion first, then gather only the evidence that earns its place.",
         "Make the problem smaller before trying to make the answer bigger.",
         "Future-you needs a clear next step more than a perfect plan.",
+        "Make the next action so obvious that tired-you can start it without rereading this.",
+        "A useful draft creates something to react to; an empty page creates pressure.",
     ],
     "back": [
         "Welcome back. Re-enter gently: choose one task and one visible finish line.",
         "Before reopening everything, decide what can stay closed today.",
         "Take one breath, review the next action, and protect your attention.",
+        "Restart with a low-friction task: open the file, write the heading, or name the decision.",
+        "Do not repay the break with panic. Re-enter at a human pace.",
     ],
 }
 LINES = {  # Short, useful prompts in the buddy's voice
