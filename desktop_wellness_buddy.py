@@ -23,7 +23,7 @@ from datetime import datetime
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 LOG = os.path.join(HERE, "desktop_wellness_buddy.log")
-# Keep the public buddy independent from the private Little Shilpa build.
+# Keep the public buddy independent from any other local buddy build.
 INSTANCE_PORT = 47654
 
 

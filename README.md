@@ -59,7 +59,17 @@ Useful flags:
 - No customer data or corporate files are required.
 - The app reads only the files placed in its own folder.
 - The schedule is local to the Windows user who installs it.
-- It uses its own local instance lock, so it can be tested alongside Little Shilpa.
+- It uses its own local instance lock, so it can be tested alongside another local buddy.
+
+## Try the demo
+
+Run the included demo launcher to start the generic mascot with a visible background:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\Run-Demo.ps1
+```
+
+The demo is local-only. Double-click the mascot for a joke, right-click for reminders and mood actions, and use the close button to hide it until the next scheduled reminder.
 
 ## Current implementation
 
