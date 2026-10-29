@@ -3,15 +3,11 @@
 The active app uses the local avatar helpers below. Personal photos and custom
 avatar files are intentionally not included in the public repository.
 """
-import math
 import os
 
 from PIL import Image, ImageChops, ImageDraw, ImageEnhance, ImageFilter, ImageFont, ImageOps
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-KEY = (254, 0, 254)  # see-through colour on Windows
-S = 4  # supersampling
-BW, BH = 210, 130  # bird picture size in pixels
 
 
 def _grad(size, top, bottom):
@@ -22,150 +18,6 @@ def _grad(size, top, bottom):
         t = y / max(1, h - 1)
         d.line([(0, y), (w, y)], fill=tuple(int(top[i] + (bottom[i] - top[i]) * t) for i in range(3)))
     return g
-
-
-def _fill_shape(img, mask, top, bottom):
-    img.paste(_grad(img.size, top, bottom), (0, 0), mask)
-
-
-def _wing(img, ang, front):
-    """One wing, rotated about the shoulder. ang in degrees, 0 = flat back, 80 = up."""
-    w, h = img.size
-    layer = Image.new("RGBA", (w, h), (0, 0, 0, 0))
-    m = Image.new("L", (w, h), 0)
-    d = ImageDraw.Draw(m)
-    sx, sy = 92 * S, 62 * S  # shoulder
-    length = (56 if front else 48) * S
-    a = math.radians(ang)
-    tipx = sx - math.cos(a) * length * 0.55
-    tipy = sy - math.sin(a) * length
-    # leaf shaped wing: shoulder -> leading edge -> tip -> trailing edge
-    lead = (sx + 18 * S - math.sin(a) * 6 * S, sy - math.sin(a) * length * 0.55 - 8 * S)
-    trail = (sx - 26 * S, sy - math.sin(a) * length * 0.45 + 12 * S)
-    def curve(p0, c, p1, n=18):
-        return [((1 - t) ** 2 * p0[0] + 2 * (1 - t) * t * c[0] + t * t * p1[0],
-                 (1 - t) ** 2 * p0[1] + 2 * (1 - t) * t * c[1] + t * t * p1[1])
-                for t in [i / n for i in range(n + 1)]]
-    top_c = (lead[0] + (tipx - sx) * 0.15, lead[1] - 4 * S)
-    bot_c = (trail[0] + (tipx - sx) * 0.1, trail[1] + 2 * S)
-    pts = curve((sx, sy), top_c, (tipx, tipy)) + curve((tipx, tipy), bot_c, (sx, sy))
-    d.polygon(pts, fill=255)
-    m = m.filter(ImageFilter.GaussianBlur(S * 0.6))
-    if front:
-        top, bot = (120, 230, 205), (30, 140, 135)
-    else:
-        top, bot = (170, 240, 225), (80, 180, 175)
-    layer.paste(_grad((w, h), top, bot), (0, 0), m)
-    # feather lines
-    ld = ImageDraw.Draw(layer)
-    for k in (0.35, 0.55, 0.75):
-        ex = sx + (tipx - sx) * k
-        ey = sy + (tipy - sy) * k
-        ld.line([(sx, sy), (ex, ey)], fill=(20, 95, 95, 140), width=S)
-    img.alpha_composite(layer)
-
-
-def _eye(d, style):
-    """Eyes carry the mood. Box is roughly x 135..145, y 44..54 (before scaling)."""
-    ink = (15, 15, 25, 255)
-    x1, y1, x2, y2 = 134 * S, 43 * S, 146 * S, 55 * S
-    if style == "blink":
-        d.line([(x1, 49 * S), (x2, 49 * S)], fill=ink, width=2 * S)
-    elif style == "happy":  # ^ ^
-        d.arc([x1, 45 * S, x2, 57 * S], 200, 340, fill=ink, width=2 * S)
-    elif style == "sleepy":  # half closed
-        d.pieslice([x1, y1, x2, y2], 0, 180, fill=ink)
-        d.line([(x1, 49 * S), (x2, 49 * S)], fill=ink, width=2 * S)
-    elif style == "zen":  # peaceful curve
-        d.arc([x1, 42 * S, x2, 54 * S], 20, 160, fill=ink, width=2 * S)
-    elif style == "sparkle":  # star eyes
-        cx, cy, r = 140 * S, 49 * S, 7 * S
-        d.polygon([(cx, cy - r), (cx + r / 3, cy - r / 3), (cx + r, cy), (cx + r / 3, cy + r / 3),
-                   (cx, cy + r), (cx - r / 3, cy + r / 3), (cx - r, cy), (cx - r / 3, cy - r / 3)],
-                  fill=(255, 215, 40, 255), outline=ink)
-    elif style == "sass":  # side glance and a raised brow
-        d.ellipse([x1, y1 + S, x2, y2 - S], fill=(255, 255, 255, 255), outline=ink)
-        d.ellipse([141 * S, 46 * S, 146 * S, 52 * S], fill=ink)
-        d.line([(133 * S, 41 * S), (146 * S, 37 * S)], fill=ink, width=2 * S)
-    else:  # open
-        d.ellipse([135 * S, 44 * S, 145 * S, 54 * S], fill=ink)
-        d.ellipse([138 * S, 45 * S, 142 * S, 49 * S], fill=(255, 255, 255, 255))
-
-
-_CACHE = {}
-
-
-def bird_rgba(angle=40, eye="open"):
-    """Cached RGBA bird facing right, hard edged alpha, ready to resize or flip."""
-    k = (angle, eye)
-    if k not in _CACHE:
-        _CACHE[k] = _draw_bird(angle, eye)
-    return _CACHE[k]
-
-
-def bird_frame(angle=40, facing=1, eye="open"):
-    """RGB image of the bird on the see-through colour (used by the preview)."""
-    im = bird_rgba(angle, eye)
-    bg = Image.new("RGB", im.size, KEY)
-    bg.paste(im.convert("RGB"), (0, 0), im.split()[3])
-    return ImageOps.mirror(bg) if facing < 0 else bg
-
-
-def _draw_bird(angle=40, eye="open"):
-    w, h = BW * S, BH * S
-    img = Image.new("RGBA", (w, h), (0, 0, 0, 0))
-    # tail
-    tm = Image.new("L", (w, h), 0)
-    td = ImageDraw.Draw(tm)
-    td.polygon([(70 * S, 66 * S), (14 * S, 100 * S), (10 * S, 112 * S), (30 * S, 108 * S),
-                (22 * S, 120 * S), (48 * S, 104 * S), (84 * S, 82 * S)], fill=255)
-    tl = Image.new("RGBA", (w, h), (0, 0, 0, 0))
-    tl.paste(_grad((w, h), (22, 120, 95), (10, 60, 70)), (0, 0), tm)
-    img.alpha_composite(tl)
-    _wing(img, angle * 0.9, False)  # back wing
-    # body
-    bm = Image.new("L", (w, h), 0)
-    bd = ImageDraw.Draw(bm)
-    bd.ellipse([58 * S, 48 * S, 138 * S, 92 * S], fill=255)
-    bl = Image.new("RGBA", (w, h), (0, 0, 0, 0))
-    bl.paste(_grad((w, h), (60, 210, 150), (15, 110, 100)), (0, 0), bm)
-    # pale belly
-    belly = Image.new("L", (w, h), 0)
-    ImageDraw.Draw(belly).ellipse([72 * S, 70 * S, 132 * S, 96 * S], fill=255)
-    belly = ImageChops.multiply(belly, bm).filter(ImageFilter.GaussianBlur(S * 3))
-    bl.paste((250, 244, 225, 255), (0, 0), ImageChops.multiply(belly, bm))
-    img.alpha_composite(bl)
-    # head
-    hm = Image.new("L", (w, h), 0)
-    ImageDraw.Draw(hm).ellipse([116 * S, 34 * S, 154 * S, 72 * S], fill=255)
-    hl = Image.new("RGBA", (w, h), (0, 0, 0, 0))
-    hl.paste(_grad((w, h), (80, 225, 170), (20, 130, 110)), (0, 0), hm)
-    img.alpha_composite(hl)
-    # shimmering throat patch
-    gm = Image.new("L", (w, h), 0)
-    ImageDraw.Draw(gm).ellipse([128 * S, 56 * S, 152 * S, 76 * S], fill=255)
-    gm = ImageChops.multiply(gm, hm)
-    gl = Image.new("RGBA", (w, h), (0, 0, 0, 0))
-    gl.paste(_grad((w, h), (255, 70, 150), (190, 20, 110)), (0, 0), gm)
-    img.alpha_composite(gl)
-    d = ImageDraw.Draw(img)
-    # beak, long and thin
-    d.polygon([(152 * S, 50 * S), (206 * S, 44 * S), (152 * S, 56 * S)], fill=(40, 40, 45, 255))
-    _eye(d, eye)
-    # front wing on top
-    _wing(img, angle, True)
-    # outline pass for a clean cartoon edge
-    a = img.split()[3]
-    edge = ImageChops.subtract(a.filter(ImageFilter.MaxFilter(S * 2 + 1)), a)
-    out = Image.new("RGBA", (w, h), (10, 55, 60, 255))
-    out.putalpha(edge)
-    base = Image.new("RGBA", (w, h), (0, 0, 0, 0))
-    base.alpha_composite(out)
-    base.alpha_composite(img)
-    small = base.resize((BW, BH), Image.LANCZOS)
-    alpha = small.split()[3].point(lambda v: 255 if v > 110 else 0)  # hard edge, no pink fringe
-    small.putalpha(alpha)
-    return small
 
 
 def _font(size):
