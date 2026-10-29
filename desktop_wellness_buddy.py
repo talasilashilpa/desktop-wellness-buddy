@@ -23,6 +23,8 @@ from datetime import datetime
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 LOG = os.path.join(HERE, "desktop_wellness_buddy.log")
+# Keep the public buddy independent from the private Little Shilpa build.
+INSTANCE_PORT = 47654
 
 
 def log(msg):
@@ -382,7 +384,7 @@ def locked():
 def single_instance():
     s = socket.socket()
     try:
-        s.bind(("127.0.0.1", 47653))  # local only: just an "already running" flag
+        s.bind(("127.0.0.1", INSTANCE_PORT))  # local only: just an "already running" flag
     except OSError:
         return None
     return s

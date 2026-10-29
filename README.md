@@ -59,6 +59,7 @@ Useful flags:
 - No customer data or corporate files are required.
 - The app reads only the files placed in its own folder.
 - The schedule is local to the Windows user who installs it.
+- It uses its own local instance lock, so it can be tested alongside Little Shilpa.
 
 ## Current implementation
 
