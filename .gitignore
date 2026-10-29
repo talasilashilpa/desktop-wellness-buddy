@@ -1,0 +1,13 @@
+__pycache__/
+*.py[cod]
+config.json
+me.jpg
+me.jpeg
+me.png
+avatar.png
+avatar_walk.png
+pose_*.png
+*.log
+*.ico
+_preview_*.png
+*.zip
